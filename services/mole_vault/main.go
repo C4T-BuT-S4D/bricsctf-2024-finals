@@ -19,7 +19,7 @@ import (
 
 var (
 	secretKey = flag.String("secret-key", "", "Secret key")
-	logLevel  = flag.String("log-level", "debug", "Log level")
+	logLevel  = flag.String("log-level", "info", "Log level")
 )
 
 type Secret struct {
@@ -99,11 +99,11 @@ func (s *Storage) Add(secret *Secret) error {
 	}
 	for {
 		if err := s.db.Update(func(tx *badger.Txn) error {
-			if err := tx.Set(secretIDKey(secret.ID), data); err != nil {
+			if err := tx.SetEntry(badger.NewEntry(secretIDKey(secret.ID), data).WithTTL(30 * time.Minute)); err != nil {
 				return fmt.Errorf("setting secret data: %w", err)
 			}
 
-			if err := tx.Set(userSecretKey(secret.Author, secret.ID), data); err != nil {
+			if err := tx.SetEntry(badger.NewEntry(userSecretKey(secret.Author, secret.ID), data).WithTTL(30 * time.Minute)); err != nil {
 				return fmt.Errorf("setting user data: %w", err)
 			}
 
@@ -149,7 +149,7 @@ func (s *Storage) SetPassword(user, password string) error {
 			if _, err := tx.Get(passwordKey(user)); !errors.Is(err, badger.ErrKeyNotFound) {
 				return fmt.Errorf("already exists")
 			}
-			if err := tx.Set(passwordKey(user), []byte(password)); err != nil {
+			if err := tx.SetEntry(badger.NewEntry(passwordKey(user), []byte(password)).WithTTL(30 * time.Minute)); err != nil {
 				return fmt.Errorf("setting password: %w", err)
 			}
 			return nil
