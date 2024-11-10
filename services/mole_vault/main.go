@@ -457,6 +457,24 @@ func main() {
 
 	app := NewApp(NewStorage(db))
 
+	go func() {
+		ticker := time.NewTicker(5 * time.Minute)
+		defer ticker.Stop()
+
+		for range ticker.C {
+			for {
+				err := db.RunValueLogGC(0.7)
+				if err == badger.ErrNoRewrite {
+					break
+				}
+				if err != nil {
+					slog.Error("error running value log GC", slog.String("error", err.Error()))
+					break
+				}
+			}
+		}
+	}()
+
 	http.HandleFunc("/add", app.handleAddSecret())
 	http.HandleFunc("/get", app.handleGetSecret())
 	http.HandleFunc("/list", app.handleListUserSecrets())
