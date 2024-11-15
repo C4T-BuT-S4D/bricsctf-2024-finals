@@ -1,1 +1,3 @@
 checklib
+numpy==2.1.3
+websocket-client==1.6.4

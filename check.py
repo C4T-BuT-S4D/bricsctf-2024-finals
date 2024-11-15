@@ -48,6 +48,7 @@ CONTAINER_ALLOWED_OPTIONS = CONTAINER_REQUIRED_OPTIONS + [
     "sysctls",
     "privileged",
     "security_opt",
+    "command",
 ]
 SERVICE_REQUIRED_OPTIONS = ["pids_limit", "mem_limit", "cpus"]
 SERVICE_ALLOWED_OPTIONS = CONTAINER_ALLOWED_OPTIONS
@@ -60,6 +61,7 @@ DATABASES = [
     "mssql",
     "clickhouse",
     "tarantool",
+    "minio",
 ]
 PROXIES = ["nginx", "envoy"]
 CLEANERS = ["dedcleaner"]
