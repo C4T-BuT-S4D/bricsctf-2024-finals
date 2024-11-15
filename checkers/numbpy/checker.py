@@ -106,9 +106,9 @@ class Checker(BaseChecker):
         repl_code = program_with_string_output(output, ops=0)
         repl_id = self.c.put_repl(session, repl_code, Status.MUMBLE)
 
-        ws = self.c.run_repl(session, repl_id, Status.CORRUPT)
+        ws = self.c.run_repl(session, repl_id, Status.MUMBLE)
         _, data = ws.recv_data()
-        self.assert_in(output.encode(), data, "invalid repl with flag", Status.CORRUPT)
+        self.assert_in(output.encode(), data, "invalid repl with flag", Status.MUMBLE)
         self.cquit(Status.OK)
 
     def check_struct(self):
@@ -135,9 +135,9 @@ class Checker(BaseChecker):
         )
         repl_id = self.c.put_repl(session, repl_code, Status.MUMBLE)
 
-        ws = self.c.run_repl(session, repl_id, Status.CORRUPT)
+        ws = self.c.run_repl(session, repl_id, Status.MUMBLE)
         _, data = ws.recv_data()
-        self.assert_in(output.encode(), data, "invalid repl with flag", Status.CORRUPT)
+        self.assert_in(output.encode(), data, "invalid repl with flag", Status.MUMBLE)
         self.cquit(Status.OK)
 
     def check_input(self):
@@ -159,14 +159,12 @@ class Checker(BaseChecker):
         )
         repl_id = self.c.put_repl(session, repl_code, Status.MUMBLE)
 
-        ws = self.c.run_repl(session, repl_id, Status.CORRUPT)
+        ws = self.c.run_repl(session, repl_id, Status.MUMBLE)
         ws.send_binary("".join(repr(i) + "\n" for i in v1 + v2).encode())
         _, data = ws.recv_data()
         try:
             res = float(data)
-            self.assert_eq(
-                res, np.dot(v1, v2), "invalid repl with flag", Status.CORRUPT
-            )
+            self.assert_eq(res, np.dot(v1, v2), "invalid repl with flag", Status.MUMBLE)
             self.cquit(Status.OK)
         except ValueError:
             self.cquit(
