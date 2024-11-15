@@ -90,6 +90,7 @@ class Checker(BaseChecker):
             ConnectionRefusedError,
             websocket.WebSocketBadStatusException,
             websocket.WebSocketProtocolException,
+            websocket.WebSocketConnectionClosedException,
         ):
             self.cquit(
                 Status.DOWN, "Connection error", "Got websocket connection error"
