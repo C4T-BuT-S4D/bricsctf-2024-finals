@@ -165,7 +165,9 @@ class Checker(BaseChecker):
         _, data = ws.recv_data()
         try:
             res = float(data)
-            self.assert_eq(res, np.dot(v1, v2), "invalid repl with flag", Status.MUMBLE)
+            self.assert_(
+                abs(res - np.dot(v1, v2)) < EPS, "invalid repl with flag", Status.MUMBLE
+            )
             self.cquit(Status.OK)
         except ValueError:
             self.cquit(
