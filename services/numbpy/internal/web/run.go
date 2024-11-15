@@ -57,13 +57,17 @@ func (app *App) RunRepl(c *websocket.Conn) {
 		if err != nil {
 			return fmt.Errorf("creating temporary file: %v", err)
 		}
+		defer os.Remove(tmpFile.Name())
 
 		_, err = tmpFile.ReadFrom(reader)
 		if err != nil {
 			return fmt.Errorf("copying from reader: %v", err)
 		}
+		if err := tmpFile.Sync(); err != nil {
+			return err
+		}
 
-		cmd := exec.Command("python", "/app/run_python.py", tmpFile.Name())
+		cmd := exec.Command("timeout", "10", "python", "/app/run_python.py", tmpFile.Name())
 		stdin, err := cmd.StdinPipe()
 		if err != nil {
 			return fmt.Errorf("piping stdin: %v", err)
