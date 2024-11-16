@@ -77,6 +77,7 @@ ALLOWED_CHECKER_PATTERNS = [
     "r: requests.Response",
     "resp: requests.Response",
     "Got requests connection error",
+    "-> requests.Response"
 ]
 FORBIDDEN_CHECKER_PATTERNS = ["requests"]
 

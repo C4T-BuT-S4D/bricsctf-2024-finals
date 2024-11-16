@@ -1,0 +1,52 @@
+ syntax = "proto3";
+
+ option java_package = "auth.proto";
+ option php_namespace = "GRPC\\Auth";
+ option php_metadata_namespace = "GRPC\\GPBMetadata";
+
+ message Token {
+   string token = 1;
+   string name = 2;
+ }
+
+
+message CreateTokenRequest {
+    string user_id = 1;
+    Token token = 2;
+}
+
+ message CreateTokenResponse {
+    Token token = 1;
+ }
+
+ message ValidateTokenRequest {
+     string token = 1;
+ }
+
+
+ message ValidateTokenResponse {
+    bool is_valid = 1;
+    string user_id = 2;
+ }
+
+ message InvalidateTokenRequest {
+     string token = 1;
+ }
+
+ message InvalidateTokenResponse {
+ }
+
+ message ListTokensRequest {
+     string user_id = 1;
+ }
+
+ message ListTokenResponse {
+     repeated Token tokens = 1;
+ }
+
+service TokenService {
+    rpc CreateToken(CreateTokenRequest) returns (CreateTokenResponse);
+    rpc ValidateToken(ValidateTokenRequest) returns (ValidateTokenResponse);
+    rpc InvalidateToken(InvalidateTokenRequest) returns (InvalidateTokenResponse);
+    rpc ListTokens(ListTokensRequest) returns (ListTokenResponse);
+}
