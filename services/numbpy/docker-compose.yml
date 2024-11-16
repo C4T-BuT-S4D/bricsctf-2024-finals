@@ -6,7 +6,7 @@ services:
       - 7117:7117
     mem_limit: 512m
     cpus: 1
-    # pids_limit: 256
+    pids_limit: 256
     depends_on:
       - postgres
       - minio
