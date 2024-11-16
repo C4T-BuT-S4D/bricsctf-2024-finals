@@ -68,6 +68,7 @@ def program_with_string_output(output: str, ops: int = 5) -> str:
             f"for el in v:",
             f"  res.append(round(el))",
             f"print(bytes(res))",
+            "input()",
         ]
     )
 
@@ -91,9 +92,9 @@ class Checker(BaseChecker):
             websocket.WebSocketBadStatusException,
             websocket.WebSocketProtocolException,
             websocket.WebSocketConnectionClosedException,
-        ):
+        ) as e:
             self.cquit(
-                Status.DOWN, "Connection error", "Got websocket connection error"
+                Status.DOWN, "Connection error", f"Got websocket connection error: {e}"
             )
         except websocket.WebSocketTimeoutException:
             self.cquit(Status.DOWN, "Connection error", "Got websocket timeout error")
@@ -132,6 +133,7 @@ class Checker(BaseChecker):
                 f"for el in v:",
                 f'  res.extend(struct.pack("d", el))',
                 f"print(bytes(res))",
+                "input()",
             ]
         )
         repl_id = self.c.put_repl(session, repl_code, Status.MUMBLE)
@@ -156,12 +158,13 @@ class Checker(BaseChecker):
                 "v1 = Vector([float(input()) for _ in range(10)])",
                 "v2 = Vector([float(input()) for _ in range(10)])",
                 f"print(v1.dot(v2))",
+                "input()",
             ]
         )
         repl_id = self.c.put_repl(session, repl_code, Status.MUMBLE)
 
         ws = self.c.run_repl(session, repl_id, Status.MUMBLE)
-        ws.send_binary("".join(repr(i) + "\n" for i in v1 + v2).encode())
+        ws.send_binary("".join(repr(float(i)) + "\n" for i in v1 + v2).encode())
         _, data = ws.recv_data()
         try:
             res = float(data)

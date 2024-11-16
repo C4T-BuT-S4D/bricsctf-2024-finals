@@ -57,7 +57,7 @@ func (app *App) GetReplCode(c *fiber.Ctx) error {
 		if q.Error == gorm.ErrRecordNotFound {
 			return util.Fail(c, fiber.StatusNotFound, "repl not found")
 		}
-		return fmt.Errorf("taking repl: %v", q.Error)
+		return fmt.Errorf("taking repl: %w", q.Error)
 	}
 
 	if user.ID != repl.UserId {
@@ -66,12 +66,12 @@ func (app *App) GetReplCode(c *fiber.Ctx) error {
 
 	reader, err := app.fs.GetObject(c.Context(), models.ReplBucket, repl.Filename.String(), minio.GetObjectOptions{})
 	if err != nil {
-		return fmt.Errorf("getting minio reader: %v", err)
+		return fmt.Errorf("getting minio reader: %w", err)
 	}
 
 	code, err := io.ReadAll(reader)
 	if err != nil {
-		return fmt.Errorf("reading from minio: %v", err)
+		return fmt.Errorf("reading from minio: %w", err)
 	}
 
 	//nolint:wrapcheck
@@ -121,7 +121,7 @@ func (app *App) PutRepl(c *fiber.Ctx) error {
 	q := app.db.Save(&repl)
 
 	if q.Error != nil {
-		return fmt.Errorf("saving repl to db: %v", q.Error)
+		return fmt.Errorf("saving repl to db: %w", q.Error)
 	}
 
 	return util.Success(c, fiber.StatusOK, &PutReplResponse{
@@ -152,7 +152,7 @@ func (app *App) EditReplCode(c *fiber.Ctx) error {
 		if q.Error == gorm.ErrRecordNotFound {
 			return util.Fail(c, fiber.StatusNotFound, "repl not found")
 		}
-		return fmt.Errorf("taking repl: %v", q.Error)
+		return fmt.Errorf("taking repl: %w", q.Error)
 	}
 
 	if user.ID != repl.UserId {
