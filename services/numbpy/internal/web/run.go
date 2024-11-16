@@ -26,6 +26,7 @@ func (app *App) RunRepl(c *websocket.Conn) {
 			if err := c.WriteMessage(websocket.BinaryMessage, []byte("id must be int")); err != nil {
 				return err
 			}
+			return nil
 		}
 
 		var repl models.Repl
@@ -45,6 +46,7 @@ func (app *App) RunRepl(c *websocket.Conn) {
 			if err := c.WriteMessage(websocket.BinaryMessage, []byte("this is not your repl")); err != nil {
 				return err
 			}
+			return nil
 		}
 
 		ctx := context.Background()
