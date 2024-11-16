@@ -1,0 +1,58 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '8.1.1'
+    id 'com.google.protobuf' version '0.9.4'
+}
+
+group = 'org.cbs'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    runtimeOnly 'io.grpc:grpc-netty-shaded:1.68.1'
+    implementation 'io.grpc:grpc-protobuf:1.68.1'
+    implementation 'io.grpc:grpc-stub:1.68.1'
+    compileOnly 'org.apache.tomcat:annotations-api:6.0.53'
+    implementation "io.grpc:grpc-services:1.68.1"
+    implementation 'org.postgresql:postgresql:42.7.4'
+    implementation 'com.zaxxer:HikariCP:6.1.0'
+}
+
+
+test {
+    useJUnitPlatform()
+}
+
+application {
+    mainClass = 'org.cbs.authrpc.App'
+}
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.5"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.68.1'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'build/generated/source/proto/main/grpc'
+            srcDirs 'build/generated/source/proto/main/java'
+        }
+    }
+}

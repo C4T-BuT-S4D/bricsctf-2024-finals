@@ -1,0 +1,42 @@
+services:
+  core:
+    build: core
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    mem_limit: 2G
+    cpus: 2
+    pids_limit: 512
+    depends_on:
+      - authrpc
+      - db
+    
+  authrpc:
+    build: authrpc
+    restart: unless-stopped
+    environment:
+      - DB_HOST=db
+      - DB_USER=qrsas
+      - DB_NAME=qrsas
+      - DB_PASS=example
+    mem_limit: 2G
+    cpus: 2
+    pids_limit: 512
+    depends_on:
+      - db
+
+
+  db:
+    image: postgres:17.1-bookworm
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: example
+      POSTGRES_USER: qrsas
+      POSTGRES_DB: qrsas
+    volumes:
+      - ./conf/pg/init.sql:/docker-entrypoint-initdb.d/init.sql
+    mem_limit: 1g
+    cpus: 1
+    pids_limit: 512
+  
+
