@@ -28,7 +28,7 @@ def random_matrix(n: int, m: int) -> np.matrix:
 def random_invertible_matrix(n: int, m: int) -> np.matrix:
     while True:
         matrix = random_matrix(n, m)
-        if abs(np.linalg.det(matrix)) > EPS:
+        if abs(np.linalg.det(matrix)) > 1:
             return matrix
 
 
