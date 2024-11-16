@@ -1,0 +1,16 @@
+{
+	admin off
+}
+
+:2112 {
+	handle /api/* {
+		reverse_proxy app:2112
+	}
+
+	handle {
+		root * /var/www/simple
+		file_server
+		try_files {path} index.html
+	}
+	header -server
+}
