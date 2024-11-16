@@ -29,6 +29,11 @@ class Checker(checklib.BaseChecker):
         resp = sess.get(f"{self.external_web_storage}/put", params={"token": token, "key": key, "value": value})
         self.check_response(resp, 'Internal error', status=checklib.Status.ERROR)
         
+    def action(self, action, *args, **kwargs):
+        try:
+            super(Checker, self).action(action, *args, **kwargs)
+        except requests.exceptions.ConnectionError:
+            self.cquit(checklib.Status.DOWN, 'Connection error', 'Got requests connection error')
 
     def check(self):
         sess = checklib.get_initialized_session()
