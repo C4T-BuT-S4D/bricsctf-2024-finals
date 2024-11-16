@@ -4,7 +4,6 @@ package org.cbs.authrpc;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.UUID;
 import java.util.logging.Logger;
 
 import auth.proto.Auth;
@@ -87,9 +86,5 @@ public class TokenService extends TokenServiceGrpc.TokenServiceImplBase {
         } catch (Exception e) {
             responseObserver.onError(e);
         }
-    }
-
-    private String generateRandomToken() {
-        return UUID.randomUUID().toString().replace("-", "x");
     }
 }
